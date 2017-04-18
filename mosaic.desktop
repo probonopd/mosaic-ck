@@ -1,0 +1,8 @@
+[Desktop Entry]
+Categories=Network;
+Exec=Mosaic
+GenericName=Mosaic CK Web Browser
+Icon=mosaic
+Name=Mosaic CK
+StartupNotify=true
+Type=Application
