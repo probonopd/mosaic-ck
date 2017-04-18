@@ -19,7 +19,7 @@ RANLIB = ranlib
 #### On Sun's, this should be gcc (ANSI required).
 CC = gcc
 
-#### Linker Flags 
+#### Linker Flags
 ldflags =
 
 #### For a few files in the source, some compilers may need to be kicked
@@ -35,12 +35,12 @@ knrflag =
 #### For NeXT, do -DNEXT
 #### For HP/UX, do -Aa -D_HPUX_SOURCE
 #### For Dell SVR4, do -DSVR4
-#### For Solaris, do -DSVR4 
+#### For Solaris, do -DSVR4
 #### For Esix 4.0.4 and Solaris x86 2.1, do -DSVR4
 #### For Convex whatever, do -DCONVEX
 #### For SCO ODT 3.0, do -DSCO -DSVR4 -DMOTIF1_2
 #### For Motorola SVR4, do -DSVR4 -DMOTOROLA -DMOTIF1_2
-sysconfigflags = -DMOTIF1_2 -DLINUX -DHAVE_ERRLIST -DUSE_STDARG
+sysconfigflags = -DMOTIF1_2 -DLINUX
 
 #### System libraries.
 # syslibs = -lPW -lsun -lmalloc
@@ -75,7 +75,7 @@ syslibs = -lc
 #### BSD/386
 # xinc = -I/usr/X11/include
 
-xinc = -I/usr/include/X11/Xm
+xinc = -I/usr/X11R6/include
 
 #### X library locations.
 # xlibs = -lXm_s -lXmu -lXt_s -lX11_s
@@ -135,27 +135,31 @@ static_xlibs = /usr/X11R6/lib/libXpm.a /usr/X11R6/lib/libXm.a /usr/X11R6/lib/lib
 #### For inline PNG support, the following should be defined:
 #### The libraries currently used are PNGLIB 0.81 and ZLIB 0.95
 
-pngdir = /usr
-pnglibdir = $(pngdir)/lib
-pngincludedir = $(pngdir)/include
-pnglibs = $(pnglibdir)/libpng.a $(pnglibdir)/libz.a /usr/lib/libm.a
-pngflags =  -I$(pngincludedir) -DHAVE_PNG
+# SAM pngdir = /xdev/mosaic/libpng/linux
+# SAM pnglibdir = $(pngdir)/lib
+# SAM pngincludedir = $(pngdir)/include
+# SAM pnglibs = $(pnglibdir)/libpng.a $(pnglibdir)/libz.a /usr/lib/libm.a
+# SAM pngflags =  -I$(pngincludedir) -DHAVE_PNG
+pnglibs = -lpng -lz -lm
+pngflags = -DHAVE_PNG
 
 #### JPEG SUPPORT
 #### For inline JPEG support, the following should be defined:
 #### The library used is Independent JPEG Group (IJG's) 5.0a.
 
-jpegdir = /usr
-jpeglibs = $(jpegdir)/lib/libjpeg.a
-jpegflags = -I$(jpegdir)/include -DHAVE_JPEG
+# SAM jpegdir = /xdev/mosaic/libjpeg/linux
+# SAM jpeglibs = $(jpegdir)/lib/libjpeg.a
+ #SAM jpegflags = -I$(jpegdir)/include -DHAVE_JPEG
+jpeglibs = -ljpeg
+jpegflags = -DHAVE_JPEG
 
 
 #### KERBEROS SUPPORT
 ####
-#### If you want Mosaic to support Kerberos authentication, set the 
+#### If you want Mosaic to support Kerberos authentication, set the
 #### following flags appropriately.  You can support Kerberos V4 and/or V5,
 #### although it's most likely that your realm supports one or the other.
-#### To enable DES-encryption of HTTP messages via Kerberos key exchange, 
+#### To enable DES-encryption of HTTP messages via Kerberos key exchange,
 #### define the KRB-ENCRYPT flag.
 
 ##krb4dir   = /usr/athena
@@ -170,7 +174,7 @@ jpegflags = -I$(jpegdir)/include -DHAVE_JPEG
 
 #Do not comment out.
 krbflags  = $(krb4flags) $(krb5flags)
-krblibs   = $(krb4libs) $(krb5libs) 
+krblibs   = $(krb4libs) $(krb5libs)
 
 
 #### DIRECT WAIS SUPPORT
@@ -180,7 +184,7 @@ krblibs   = $(krb4libs) $(krb5libs)
 #### recommend linking with CNIDR's freeWAIS 0.5 distribution; other
 #### WAIS distributions may work but we have not tested them with
 #### Mosaic.  freeWAIS 0.5 can currently (Sept.1995) be found at
-#### ftp://sunsite.unc.edu/pub/wais/servers/freeWAIS 
+#### ftp://sunsite.unc.edu/pub/wais/servers/freeWAIS
 
 #### If you do not wish to link to the WAIS libraries, then comment
 #### the following lines out.  Mosaic will then communicate with WAIS
@@ -221,7 +225,14 @@ customflags =
 
 # ---------------------- END OF CUSTOMIZABLE OPTIONS -------------------------
 
-CFLAGS = -g $(sysconfigflags) $(prereleaseflags)
+# Disable certain warnings as we don't care for them
+CWARNINGS = -Wall \
+	-Wno-parentheses \
+	-Wno-switch -Wno-switch-enum \
+	-Wno-char-subscripts \
+	-Wno-unused-result
+
+CFLAGS = -g $(sysconfigflags) $(prereleaseflags) $(CWARNINGS) $(customflags)
 
 # Don't worry about these -- for development purposes only.
 PURIFY = purify
